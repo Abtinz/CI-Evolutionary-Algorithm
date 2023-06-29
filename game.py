@@ -197,21 +197,21 @@ class Game:
       
         return chromosome
 
-    def plot_function(max_scores, min_scores, scores_level,name):
+    def plot_function(self, max_scores, min_scores, average_scores,name):
         plt.plot(max_scores, label="max")
         plt.plot(min_scores, label="min")
-        plt.plot(scores_level, label="avg")
+        plt.plot(average_scores, label="average")
         plt.xlabel("generation")
-        plt.ylabel("fitness")
+        plt.ylabel("assessing competition points")
         plt.legend()
-        plt.savefig(f'./plots/{name}.png')
+        plt.savefig('C:/Users/abt/Desktop/CI_P3/attachments/plots/est.png')
 
-    def scores_evaluation(scores):
+    def scores_evaluation(self, scores):
         scores_np = np.asarray(scores)
         return scores_np.max(), scores_np.min(), scores_np.mean()
         
 
-def main(level_file_route , chromosomes_number , iterations_count):
+def main(level_file_route , chromosomes_number , iterations_count,plot_address):
 
     
     first_itration = True
@@ -221,6 +221,9 @@ def main(level_file_route , chromosomes_number , iterations_count):
     game.load_next_level()
     next_generation_chromosomes = []
 
+    minimum_points = []
+    maximum_points = []
+    average_points = []
     while iterations_count > 0 :
 
         if not first_itration:
@@ -231,7 +234,7 @@ def main(level_file_route , chromosomes_number , iterations_count):
         else:
             chromosomes  , chromosomes_string = game.population(gens_count, chromosomes_number)
             first_itration = False
-        print(len(chromosomes))
+        
         scores = []
         for i in range(len(chromosomes_string)):
             scores.append(game.assessing_competency(chromosomes_string[i]))
@@ -240,13 +243,21 @@ def main(level_file_route , chromosomes_number , iterations_count):
         new_generation = game.crossover(selected_chromosomes, 200)
         iteration_percent = 0.3 * len(new_generation)
         next_generation_chromosomes = game.mutation(new_generation,iteration_percent)
-        print(game.scores_evaluation(scores))
+        maximum, minimum, average = game.scores_evaluation(scores)
+
+        minimum_points.append(minimum)
+        maximum_points.append(maximum)
+        average_points.append(average)
+
         iterations_count -=1
-    print(next_generation_chromosomes[0])
+
+    
+    
+    game.plot_function(maximum_points ,minimum_points, average_points, plot_address)   
         
 
-main(level_file_route = "./levels/level4.txt",  chromosomes_number= 350, iterations_count=20)
-main(level_file_route = "./levels/level5.txt",  chromosomes_number= 350, iterations_count=20)
-main(level_file_route = "./levels/level6.txt",  chromosomes_number= 350, iterations_count=20)
-main(level_file_route = "./levels/level7.txt",  chromosomes_number= 350, iterations_count=20)
+#main(level_file_route = "./levels/level4.txt",  chromosomes_number= 350, iterations_count=20)
+main(level_file_route = "./levels/level5.txt",  chromosomes_number= 350, iterations_count=20, plot_address = './plots/level5.png')
+main(level_file_route = "./levels/level6.txt",  chromosomes_number= 350, iterations_count=20 ,plot_address = './plots/level6.png')
+#main(level_file_route = "./levels/level7.txt",  chromosomes_number= 350, iterations_count=20)
 
