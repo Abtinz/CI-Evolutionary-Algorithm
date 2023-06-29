@@ -2,7 +2,11 @@
     "cSpell.words": [
         "arange",
         "gumpas",
+        "itration",
         "matplotlib",
-        "pyplot"
+        "pyplot",
+        "savefig",
+        "xlabel",
+        "ylabel"
     ]
 }
