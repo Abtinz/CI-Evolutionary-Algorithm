@@ -24,10 +24,15 @@ class Game:
         return level, len(level)
 
 
+    #making the first population for algorithm
     def population(gens_count, chromosome_count):
-        # chromosomes = [[random.randint(0,2) for i in range(len)] for j in range(200)]
-        chromosome = [[np.random.choice(np.arange(0, 3), p=[0.5, 0.4, 0.1]) for i in range(gens_count)] for j in range(chromosome_count)]
-        return chromosome
+
+        chromosome = [[np.random.choice(np.arange(0, 3), p=[0.4, 0.3, 0.3]) for i in range(gens_count)] for j in range(chromosome_count)]
+        chromosomes_string = []
+        for i in range(chromosome_count):
+            for j in range(gens_count):
+                chromosomes_string.append(str(chromosomes_string[i][j]))
+        return chromosome , chromosomes_string
     
     def get_score(self, actions):
         # Get an action sequence and determine the steps taken/score
