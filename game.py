@@ -61,12 +61,11 @@ class Game:
                     steps += 1
                 elif (next_step == 'L' and actions[i] == '2'):
                     steps += 1
-            
             if(second_next_step != ''):
                 if(second_next_step == 'D' and  actions[i] == '1'  and actions[i+1] == '1'):
                     steps +=1
             
-            #wining
+            #wining state
             if(next_step != ''):  
                 if (next_step == 'G' and actions[i-1] != '1'):
                     wining = False
@@ -99,16 +98,12 @@ class Game:
                     if (second_next_step == 'G' and actions[i+1] == '0'):
                         killed_gumpas_count += 1
         
-        score += 1 * alive_steps
-        score += 6 * mushroom_point
-        score += 8 * killed_gumpas_count
-        score -= 2 * not_a_good_jump
-        score += 3  if(jump_before_end) else 0
-        score += 8  if(wining) else 0
+        #final validation for numbers
+        score += 1 * alive_steps + 6 * mushroom_point + 8 * killed_gumpas_count - 2 * not_a_good_jump + (3  if(jump_before_end) else 0) + (8  if(wining) else -5)
 
         return score
 
-    # will help to perform selection operation on the chromosomes
+    # will help to perform selection operation on the chromosomes base on them scores.
     def selection(self,chromosomes, scores):
     
         for i in range(len(chromosomes)):
@@ -120,12 +115,11 @@ class Game:
         half_length = int(length/2)
         return chromosomes[half_length:length]
 
-    def crossover(self, chromosome, num):
-        
-    
+    #this function will implement crossover with child numbers and last chromosome
+    def crossover(self, chromosome, child_numbers):
         new_generation = []
-        survived_parents_count  = int(num/10)
-        child_counts = num - survived_parents_count
+        survived_parents_count  = int(child_numbers/10)
+        child_counts = child_numbers - survived_parents_count
         
         for i in range(child_counts):
             
@@ -197,21 +191,22 @@ class Game:
       
         return chromosome
 
-    def plot_function(self, max_scores, min_scores, average_scores,name):
+    def plot_function(self, max_scores, min_scores, average_scores):
         plt.plot(max_scores, label="max")
         plt.plot(min_scores, label="min")
         plt.plot(average_scores, label="average")
         plt.xlabel("generation")
         plt.ylabel("assessing competition points")
         plt.legend()
-        plt.savefig('C:/Users/abt/Desktop/CI_P3/attachments/plots/est.png')
+        plt.show()
+        #plt.savefig('/plots/est.png')
 
     def scores_evaluation(self, scores):
         scores_np = np.asarray(scores)
         return scores_np.max(), scores_np.min(), scores_np.mean()
         
 
-def main(level_file_route , chromosomes_number , iterations_count,plot_address):
+def main(level_file_route , chromosomes_number , iterations_count):
 
     
     first_itration = True
@@ -251,13 +246,19 @@ def main(level_file_route , chromosomes_number , iterations_count,plot_address):
 
         iterations_count -=1
 
-    
-    
-    game.plot_function(maximum_points ,minimum_points, average_points, plot_address)   
+
+    game.plot_function(maximum_points ,minimum_points, average_points) 
+
+    best_answer = 0
+    best_point = 0
+    for i in range(len(chromosomes_string)):
+            score = game.assessing_competency(chromosomes_string[i])
+            if score > best_point: 
+                best_point = score
+                best_answer = chromosomes_string[i]
+
+    print(f"the best possible answer of this level:\n{best_answer}\npoint: {best_point}\n question:{level}")
         
 
-#main(level_file_route = "./levels/level4.txt",  chromosomes_number= 350, iterations_count=20)
-main(level_file_route = "./levels/level5.txt",  chromosomes_number= 350, iterations_count=20, plot_address = './plots/level5.png')
-main(level_file_route = "./levels/level6.txt",  chromosomes_number= 350, iterations_count=20 ,plot_address = './plots/level6.png')
-#main(level_file_route = "./levels/level7.txt",  chromosomes_number= 350, iterations_count=20)
-
+main(level_file_route = "./levels/level5.txt",  chromosomes_number= 500, iterations_count=10)
+main(level_file_route = "./levels/level6.txt",  chromosomes_number= 450, iterations_count=12)
